@@ -6,6 +6,7 @@ async function connectDb() {
   const server: Server = app.listen(envConfig.port, () => {
     console.log("server running on port", envConfig.port);
   });
+
   const existServer = () => {
     if (server) {
       server.close(() => {
