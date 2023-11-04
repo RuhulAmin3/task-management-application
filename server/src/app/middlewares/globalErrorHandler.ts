@@ -7,12 +7,18 @@ const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
   let statusCode: number = StatusCodes.INTERNAL_SERVER_ERROR;
   let message: string = "something is wrong";
   let errorMessages: IGenericErrorMessage[] = [];
+
   if (err instanceof ZodError) {
     const zodError = handleZodError(err);
     statusCode = zodError.statusCode;
     message = zodError.name;
     errorMessages = zodError.errorMessages;
+  } else if (err instanceof Error) {
+    message = err.name;
+    statusCode = (err as any).status;
+    errorMessages = [{ path: "", message: err.message }];
   }
+
   console.log(err);
   res.json({
     success: false,

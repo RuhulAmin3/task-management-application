@@ -13,6 +13,9 @@ const createUser = z.object({
         required_error: "email is required",
       })
       .email({ message: "provide a valid email" }),
+    password: z.string({
+      required_error: "password is required",
+    }),
   }),
 });
 
