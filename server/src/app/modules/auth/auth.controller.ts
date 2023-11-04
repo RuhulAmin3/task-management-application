@@ -2,24 +2,45 @@ import { NextFunction, Request, Response } from "express";
 import { authService } from "./auth.service";
 import { StatusCodes } from "http-status-codes";
 import genericResponse from "../../../shared/response";
-import { User } from "@prisma/client";
+import { ISigninResponse, ISignupResponseType } from "./auth.interface";
 
-const createUser = async (req: Request, res: Response, next: NextFunction) => {
+const signupUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const userData = req.body;
     const result = await authService.signupUser(userData);
 
-    genericResponse<Omit<User, "password">>(res, {
+    res.cookie("accessToken", result.accessToken);
+
+    genericResponse<ISignupResponseType>(res, {
+      success: true,
       statusCode: StatusCodes.CREATED,
       message: "user created successfully",
       data: result,
-      success: true,
     });
   } catch (err) {
     next(err);
   }
 };
 
-export const userController = {
-  createUser,
+const signinUser = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const userData = req.body;
+    const result = await authService.signinUser(userData);
+
+    res.cookie("accessToken", result.accessToken);
+
+    genericResponse<ISigninResponse>(res, {
+      success: true,
+      statusCode: StatusCodes.CREATED,
+      message: "user login successful",
+      data: result,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const authController = {
+  signupUser,
+  signinUser,
 };

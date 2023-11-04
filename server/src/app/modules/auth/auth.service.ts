@@ -6,8 +6,13 @@ import envConfig from "../../../envConfig";
 import { Secret } from "jsonwebtoken";
 import { User } from "@prisma/client";
 import { excludeField } from "../../../utils";
+import {
+  ISignin,
+  ISigninResponse,
+  ISignupResponseType,
+} from "./auth.interface";
 
-const signinUser = async (payload: { email: string; password: string }) => {
+const signinUser = async (payload: ISignin): Promise<ISigninResponse> => {
   const isUserExist = await prisma.user.findUnique({
     where: {
       email: payload.email,
@@ -42,7 +47,7 @@ const signinUser = async (payload: { email: string; password: string }) => {
   };
 };
 
-const signupUser = async (payload: User): Promise<Omit<User, "password">> => {
+const signupUser = async (payload: User): Promise<ISignupResponseType> => {
   const isUserExist = await prisma.user.findUnique({
     where: {
       email: payload.email,
@@ -64,10 +69,27 @@ const signupUser = async (payload: User): Promise<Omit<User, "password">> => {
     data: payload,
   });
 
+  if (!result) {
+    throw new createError.BadRequest("failed to create user");
+  }
+
+  const accessToken = jwtHelper.createToken(
+    {
+      email: result.email,
+      id: result.id,
+    },
+    envConfig.jwt.jwt_secret as Secret,
+    envConfig.jwt.jwt_expireIn as string
+  );
+
   // remove password after user created successfully
   const userWithoutPassword = excludeField(result, ["password"]);
 
-  return userWithoutPassword;
+  const response = {
+    data: userWithoutPassword,
+    accessToken: accessToken,
+  };
+  return response;
 };
 
 export const authService = {
