@@ -8,9 +8,21 @@ const router = express.Router();
 
 router.post(
   "/",
-  isLoggedIn(),
+  isLoggedIn,
   zodValidationRequest(taskValidation.createTask),
   taskController.createTask
 );
+
+router.get("/", isLoggedIn(), taskController.getTasks);
+router.get("/:id", isLoggedIn(), taskController.getSignleTasks);
+
+router.patch(
+  "/:id",
+  isLoggedIn(),
+  zodValidationRequest(taskValidation.updateTask),
+  taskController.updateTask
+);
+
+router.delete("/:id", isLoggedIn(), taskController.deleteTask);
 
 export const taskRoutes = router;
