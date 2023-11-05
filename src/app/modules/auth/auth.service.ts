@@ -18,6 +18,7 @@ const signinUser = async (payload: ISignin): Promise<ISigninResponse> => {
       email: payload.email,
     },
   });
+
   if (!isUserExist) {
     throw new createError.NotFound("wrong credentials");
   }
