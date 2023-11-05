@@ -8,7 +8,7 @@ const router = express.Router();
 
 router.post(
   "/",
-  isLoggedIn,
+  isLoggedIn(),
   zodValidationRequest(taskValidation.createTask),
   taskController.createTask
 );

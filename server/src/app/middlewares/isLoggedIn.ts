@@ -17,7 +17,7 @@ export const isLoggedIn =
         envConfig.jwt.jwt_secret as Secret
       );
       if (!isVarifiedToken) {
-        throw new createError.Unauthorized("you are unauthorized user");
+        throw new createError.Unauthorized("your token is not valid");
       }
       req.user = isVarifiedToken as IUser;
       next();

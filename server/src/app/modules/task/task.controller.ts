@@ -3,6 +3,9 @@ import { taskService } from "./task.service";
 import { Task } from "@prisma/client";
 import genericResponse from "../../../shared/response";
 import { StatusCodes } from "http-status-codes";
+import pickQuery from "../../../shared/pickQuery";
+import { paginationFields, taskQueryFields } from "./task.constant";
+import { IPaginationOptions, ITaskSearchField } from "./task.interface";
 
 const createTask = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -23,13 +26,20 @@ const createTask = async (req: Request, res: Response, next: NextFunction) => {
 const getTasks = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { id } = req.user;
-    const result = await taskService.getTasks(id);
+    const paginationOptions = pickQuery(req.query, paginationFields);
+    const searchOptions = pickQuery(req.query, taskQueryFields);
+    const result = await taskService.getTasks(
+      id,
+      paginationOptions as IPaginationOptions,
+      searchOptions as ITaskSearchField
+    );
 
     genericResponse<Task[]>(res, {
       success: true,
       statusCode: StatusCodes.OK,
       message: "all task retrieved successfully",
-      data: result,
+      data: result.data,
+      meta: result.meta,
     });
   } catch (err) {
     next(err);
@@ -43,7 +53,8 @@ const getSignleTasks = async (
 ) => {
   try {
     const { id } = req.params;
-    const result = await taskService.getSingleTask(id);
+    const userId = req.user.id;
+    const result = await taskService.getSingleTask(id, userId);
 
     genericResponse<Task>(res, {
       success: true,
@@ -60,7 +71,8 @@ const updateTask = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params;
     const data = req.body;
-    const result = await taskService.updateTask(id, data);
+    const userId = req.user.id;
+    const result = await taskService.updateTask(id, userId, data);
 
     genericResponse<Task>(res, {
       success: true,
@@ -76,7 +88,8 @@ const updateTask = async (req: Request, res: Response, next: NextFunction) => {
 const deleteTask = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params;
-    const result = await taskService.deleteTask(id);
+    const userId = req.user.id;
+    const result = await taskService.deleteTask(id, userId);
 
     genericResponse(res, {
       success: true,

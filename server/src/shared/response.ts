@@ -6,11 +6,12 @@ type GenericResponseType<T> = {
   statusCode: number;
   data: T;
   meta?: {
-    total: number;
-    limit: number;
     page: number;
-    nextPage: number;
-    prevPage: number;
+    limit: number;
+    total: number;
+    prevPage: number | null;
+    nextpage: number | null;
+    totalPages: number | null;
   };
 };
 
