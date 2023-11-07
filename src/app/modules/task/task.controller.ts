@@ -6,6 +6,7 @@ import { StatusCodes } from "http-status-codes";
 import pickQuery from "../../../shared/pickQuery";
 import { paginationFields, taskQueryFields } from "./task.constant";
 import { IPaginationOptions, ITaskSearchField } from "./task.interface";
+import { IUser } from "../../../interfaces/user";
 
 const createTask = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -25,7 +26,7 @@ const createTask = async (req: Request, res: Response, next: NextFunction) => {
 
 const getTasks = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { id } = req.user;
+    const { id } = req.user as IUser;
     const paginationOptions = pickQuery(req.query, paginationFields);
     const searchOptions = pickQuery(req.query, taskQueryFields);
     const result = await taskService.getTasks(
@@ -53,7 +54,7 @@ const getSignleTasks = async (
 ) => {
   try {
     const { id } = req.params;
-    const userId = req.user.id;
+    const userId = (req.user as IUser).id;
     const result = await taskService.getSingleTask(id, userId);
 
     genericResponse<Task>(res, {
@@ -71,7 +72,7 @@ const updateTask = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params;
     const data = req.body;
-    const userId = req.user.id;
+    const userId = (req.user as IUser).id;
     const result = await taskService.updateTask(id, userId, data);
 
     genericResponse<Task>(res, {
@@ -88,7 +89,7 @@ const updateTask = async (req: Request, res: Response, next: NextFunction) => {
 const deleteTask = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params;
-    const userId = req.user.id;
+    const userId = (req.user as IUser).id;
     const result = await taskService.deleteTask(id, userId);
 
     genericResponse(res, {

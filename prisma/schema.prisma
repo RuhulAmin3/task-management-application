@@ -27,8 +27,8 @@ model User {
 model Task {
   id       String     @id @default(auto()) @map("_id") @db.ObjectId
   title    String
-  status   TaskStatus @default(TODO)
-  priority Priority   @default(NORMAL)
+  status   TaskStatus @default(Todo)
+  priority Priority   @default(Normal)
   userId   String     @db.ObjectId
   user     User       @relation(fields: [userId], references: [id])
 
@@ -39,14 +39,14 @@ model Task {
 }
 
 enum TaskStatus {
-  TODO
-  COMPLETE
-  INPROGRESS
+  Todo
+  Completed
+  Inprogress
 }
 
 enum Priority {
-  HIGHT
-  MEDIUM
-  LOW
-  NORMAL
+  High
+  Medium
+  Low
+  Normal
 }

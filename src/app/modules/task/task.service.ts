@@ -37,7 +37,6 @@ const getTasks = async (
     paginationOption.sortOrder
   );
   const { searchTerm, ...filterData } = searchOption;
-
   const conditions = [];
 
   // search task title, status, priority
@@ -74,7 +73,6 @@ const getTasks = async (
           userId,
         }
       : { userId };
-
   const result = await prisma.task.findMany({
     where: finalCondition,
     take: limit,
@@ -92,13 +90,6 @@ const getTasks = async (
   const totalTask = await prisma.task.count({
     where: finalCondition,
   });
-
-  if (totalTask === 0) {
-    throw new createError.NotFound(
-      "there is no task found. you haven't added task yet"
-    );
-  }
-
   const totalPages = Math.ceil(totalTask / limit);
   const prevPage = page - 1 > 0 ? page - 1 : null;
   const nextpage = page + 1 <= totalPages ? page + 1 : null;
@@ -150,7 +141,6 @@ const updateTask = async (
   if (!isExistTask) {
     throw new createError.NotFound("task not found");
   }
-
   const result = await prisma.task.update({
     where: {
       id: id,
