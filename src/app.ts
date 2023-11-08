@@ -11,6 +11,10 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use("/api/v1", allRoutes);
 
+app.get("/", (req: Request, res: Response) => {
+  res.json("in the name of Allah");
+});
+
 app.all("*", (req: Request, res: Response, next: NextFunction) => {
   res.status(StatusCodes.NOT_FOUND).json({
     success: false,
