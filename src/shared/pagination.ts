@@ -13,7 +13,7 @@ export const calculatePagination = (
   sortOrder: string = "desc"
 ): IReturnPagination => {
   page = page ? page : 1;
-  limit = limit ? limit : 10;
+  limit = limit ? limit : 50;
   const skip = (page - 1) * limit;
   return {
     page,

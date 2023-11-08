@@ -7,6 +7,7 @@
 ### Feature of Task management application
 
 - User can register / Login account after login user can see his own previous added task he can add new task with update delete functionality.
+- pagination and filtering implemented in get all tasks api endpoint.
 
 ### Explanation of the using technologies.
 
